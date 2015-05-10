@@ -14,6 +14,7 @@ var {
   AppRegistry,
   Image,
   ListView,
+  NavigatorIOS,
   StyleSheet,
   Text,
   View,
@@ -30,7 +31,20 @@ var MOCKED_MOVIES_DATA = [
 ]
 var REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
 
-var ReactNative = React.createClass({
+var RssReaderNavigator = React.createClass({
+  render: function() {
+    return (
+      <NavigatorIOS
+        style={styles.navigator}
+        initialRoute={{
+          component: RssList,
+          title: 'Feedly RSS List',
+        }}/>
+      );
+  }
+})
+
+var RssList = React.createClass({
   fetchData: function() {
     fetch(REQUEST_URL)
       .then((response) => response.json())
@@ -100,6 +114,9 @@ var ReactNative = React.createClass({
 });
 
 var styles = StyleSheet.create({
+  navigator: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     flexDirection: 'row',
@@ -138,4 +155,4 @@ var styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('ReactNative', () => ReactNative);
+AppRegistry.registerComponent('ReactNative', () => RssReaderNavigator);
