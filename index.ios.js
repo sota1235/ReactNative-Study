@@ -1,6 +1,11 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
+ * Sample React Native App (RSS Reader)
+ *
+ * Description:
+ *    Feedlyの未読RSSを取得し、表示する
+ *
+ * Author:
+ *    @sota1235
  */
 'use strict';
 
