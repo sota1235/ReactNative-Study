@@ -20,7 +20,7 @@ var {
   View,
 } = React;
 
-var REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
+var REQUEST_URL = 'http://b.hatena.ne.jp/sota1235/rss';
 
 var RssReaderNavigator = React.createClass({
   render: function() {
@@ -28,34 +28,29 @@ var RssReaderNavigator = React.createClass({
       <NavigatorIOS
         style={styles.navigator}
         initialRoute={{
-          component: RssList,
-          title: 'Feedly RSS List',
+          component: RSSList,
+          title: 'sota1235\'s Hatena Bookmark List',
         }}/>
       );
   }
 })
 
-var RssList = React.createClass({
+var RSSList = React.createClass({
   fetchData: function() {
     fetch(REQUEST_URL)
-      .then((response) => response.json())
+      .then((response) => response.text())
       .then((responseData) => {
         this.setState({
-          dataSource:
-            this.state.dataSource.cloneWithRows(
-              responseData.movies
-              ),
+          rss: responseData,
           loaded: true,
         });
       })
+      .catch((error) => console.log(error))
       .done();
   },
 
   getInitialState: function() {
     return {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (row1, row2) => row1 !== row2,
-      }),
       loaded: false,
     };
   },
@@ -68,38 +63,24 @@ var RssList = React.createClass({
     if (!this.state.loaded) {
       return this.renderLoadingView();
     }
-
-    return (
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderMovie}
-        style={styles.listView}
-      />
-    );
+    return this.renderRSS(this.state.rss);
   },
 
   renderLoadingView: function() {
     return (
-        <View style={styles.container}>
-          <Text>
-            Loading movies...
-          </Text>
-        </View>
-      );
-  },
+      <View style={styles.container}>
+        <Text>
+          Loading bookmarks...
+        </Text>
+      </View>
+    );
+},
 
-  renderMovie: function(movie) {
+  renderRSS: function(rss) {
     return (
         <View style={styles.container}>
-          <Image
-            source={{uri: movie.posters.thumbnail}}
-            style={styles.thumbnail}
-          />
-        <View style={styles.rightContainer}>
-          <Text style={styles.title}>{movie.title}</Text>
-          <Text style={styles.year}>{movie.year}</Text>
+          <Text style={styles.title}>RSS:{rss.substr(0, 20)}</Text>
         </View>
-      </View>
       );
   },
 });
@@ -110,7 +91,6 @@ var styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
@@ -122,23 +102,6 @@ var styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 8,
     textAlign: 'center',
-  },
-  year: {
-    textAlign: 'center',
-  },
-  thumbnail: {
-    width: 53,
-    height: 81,
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
   listView: {
     paddingTop: 20,
